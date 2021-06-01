@@ -7,7 +7,22 @@ $(function() {
     inicializaCronometro();
     inicializaMarcadores();
     $("#botao-reiniciar").click(reiniciaJogo);
+    atualizaPlacar();
+
+    $("#usuarios").selectize({
+        create: true,
+        sortField: 'text'
+    });
+
+    $(".tooltip").tooltipster({
+        trigger: "custom"
+    });
 });
+
+function atualizaTempoInicial(tempo) {
+    tempoInicial = tempo;
+    $("#tempo-digitacao").text(tempo);
+}
 
 function atualizaTamanhoFrase() {
     var frase = $(".frase").text();
@@ -19,7 +34,6 @@ function atualizaTamanhoFrase() {
 
 function inicializaContadores() {
     campo.on("input", function() {
-        // val pega o valor de algum campo que o usuario digita
         var conteudo = campo.val();
 
         var qtdPalavras = conteudo.split(/\S+/).length - 1;
@@ -31,10 +45,10 @@ function inicializaContadores() {
 }
 
 function inicializaMarcadores() {
-    var frase = $(".frase").text();
     campo.on("input", function() {
+        var frase = $(".frase").text();
         var digitado = campo.val();
-        var comparavel = frase.substr(0, digitado.length);//pega um pedaço da string (posição, até)
+        var comparavel = frase.substr(0, digitado.length);
 
         if (digitado == comparavel) {
             campo.addClass("borda-verde");
@@ -47,26 +61,22 @@ function inicializaMarcadores() {
 }
 
 function inicializaCronometro() {
-    var tempoRestante = $("#tempo-digitacao").text();
     campo.one("focus", function() {
+        var tempoRestante = $("#tempo-digitacao").text();
     	var cronometroID = setInterval(function() {
     		tempoRestante--;
     		$("#tempo-digitacao").text(tempoRestante);
     		if (tempoRestante < 1) {
                 clearInterval(cronometroID);
-                //id é o retorno do setInterval
-                //campo.css("background-color", "lightgray") //edita css
-                //campo.addClass("campo_desativado"); //adiciona classe css
                 finalizaJogo();
     		}
-    	}, 1000); //Executa a ação de dentro acada 1 segundo
+    	}, 1000);
     });
 }
 
 function finalizaJogo() {
-    campo.attr("disabled", true);//pega ou envia o valor de um atributo
-    //attr("atributo", true) envia para tag o atributo com valor true  
-    campo.toggleClass("campo-desativado"); //Se tiver com a classe tira, se não tiver coloca a classe
+    campo.attr("disabled", true);
+    campo.toggleClass("campo-desativado");
     inserePlacar();
 }
 
